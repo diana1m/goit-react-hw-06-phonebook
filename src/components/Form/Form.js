@@ -1,9 +1,10 @@
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';  
 import 'yup-phone';
-import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import {Form, ErrorFormik, Button} from './Form.styled';
+import { useDispatch } from "react-redux";
+import { addContacts } from 'redux/contactsSlice';
+
 
 const phoneRegExp = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 
@@ -14,19 +15,18 @@ const Schema = yup.object().shape({
     .required('Please, enter phone number'),
   });
 
-export const ContactsForm = ({onSave, contacts}) => {
+export const ContactsForm = () => {
+    const dispatch = useDispatch();
+
     return(
         <Formik 
         initialValues={{ contacts: [], name: '', number: '' }}
         validationSchema = {Schema}
         onSubmit={(values, actions) => {
-          onSave({
-            id: nanoid(),
-            name: values.name, 
-            number: values.number,
-          });
+          dispatch(addContacts(values.name, values.number));
           actions.resetForm();
-        }}>
+        }}
+        >
           <Form>
             <label htmlFor="name">Name</label>
             <Field name="name" type="text" />
@@ -40,13 +40,4 @@ export const ContactsForm = ({onSave, contacts}) => {
           </Form>
         </Formik>
     )
-}
-
-ContactsForm.propTypes = {
-  onSave: PropTypes.func.isRequired,
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-        name: PropTypes.string.isRequired,
-    }).isRequired
-).isRequired,
 }

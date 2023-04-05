@@ -24,13 +24,6 @@ export const App = () => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const addContact = newContact => {
-    if(contacts.find(contact => contact.name === newContact.name)){
-      return alert(`${newContact.name} is already in contacts!`)
-    }
-    setContacts([...contacts, newContact]);
-  };
-
   const deleteContact = contactName => {
     setContacts(contacts.filter(contact => contact.name !== contactName));
   };
@@ -46,7 +39,7 @@ export const App = () => {
   return (
     <Layout>
       <h1>Phone book</h1>
-      <ContactsForm onSave={addContact} contacts={contacts}></ContactsForm>
+      <ContactsForm></ContactsForm>
       <h2>Contacts</h2>
       <Filter onChange={handleChange} value={filter}/> 
       <ContactsList contactsList={filterContact(contacts)} onClickDelete={deleteContact}/>
