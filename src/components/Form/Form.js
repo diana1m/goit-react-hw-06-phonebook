@@ -4,6 +4,8 @@ import 'yup-phone';
 import {Form, ErrorFormik, Button} from './Form.styled';
 import { useDispatch } from "react-redux";
 import { addContacts } from 'redux/contactsSlice';
+import { useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
 
 
 const phoneRegExp = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
@@ -17,12 +19,17 @@ const Schema = yup.object().shape({
 
 export const ContactsForm = () => {
     const dispatch = useDispatch();
+    const contacts = useSelector(getContacts);
 
     return(
         <Formik 
         initialValues={{ contacts: [], name: '', number: '' }}
         validationSchema = {Schema}
         onSubmit={(values, actions) => {
+          
+          if(contacts.find(contact => contact.name === values.name)){
+            return alert(`${values.name} is already in contacts!`)
+          }
           dispatch(addContacts(values.name, values.number));
           actions.resetForm();
         }}
